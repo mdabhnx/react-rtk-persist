@@ -4,6 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import counterReducer from "./../src/features/counter/counterSlice";
+import { userApi } from "../services/userService";
 
 const persistConfig = {
   key: "root",
@@ -14,12 +15,13 @@ const persistedReducer = persistReducer(persistConfig, counterReducer);
 
 export const store = configureStore({
   reducer: {
+    [userApi.reducerPath]: userApi.reducer,
     counter: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(userApi.middleware),
 });
 
 export const persistor = persistStore(store);
